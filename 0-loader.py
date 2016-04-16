@@ -1,38 +1,20 @@
+import json
 from pymongo import MongoClient
 
-#Connect to mongo
-client = MongoClient('mongodb://localhost/27017')
-db = client['uc-proto']
+# Get Config file
+with open("config.json") as config_file:
+    config = json.load(config_file)
 
+# Connect to mongo
+client = MongoClient(config['db_url'])
+db = client[config['db_client']]
+
+# Drop current indicators collection
 indicators = db.indicators
-
 indicators.drop()
 
-
-indicators_list = [
-'therefore',
-'so',
-'hence',
-'consequently',
-'because',
-'for',
-'since',
-'when',
-'then',
-'next',
-'who',
-'we',
-'they',
-'do',
-'doing',
-'did',
-'thats',
-'in particular',
-'but',
-'know',
-'not'
-]
-
+# Add list of indicators from config file
+indicators_list = config['indicators']
 
 count = 0
 

@@ -1,11 +1,17 @@
+import json
 from pymongo import MongoClient
 import urllib.request
 from bs4 import BeautifulSoup, SoupStrainer
 import string
 
-#Connect to mongo
-client = MongoClient('mongodb://localhost/27017')
-db = client['uc-proto']
+# Get Config file
+with open("config.json") as config_file:
+    config = json.load(config_file)
+
+# Connect to mongo
+client = MongoClient(config['db_url'])
+db = client[config['db_client']]
+
 articles = db.articles
 
 count = 0
@@ -18,9 +24,14 @@ for article in articles.find():
 
 		text = article['article_text']
 		
+		punctuation_exceptions = ['/']
+		
 		for c in string.punctuation:
 			#try:
-			text = text.replace(c,"")
+			if c in punctuation_exceptions:
+				text = text.replace(c, " ")
+			else:
+				text = text.replace(c,"")
 			#except:
 			#	pass
 		

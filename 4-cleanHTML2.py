@@ -1,10 +1,16 @@
+import json
 from pymongo import MongoClient
 import urllib.request
 from bs4 import BeautifulSoup, SoupStrainer
 
-#Connect to mongo
-client = MongoClient('mongodb://localhost/27017')
-db = client['uc-proto']
+# Get Config file
+with open("config.json") as config_file:
+    config = json.load(config_file)
+
+# Connect to mongo
+client = MongoClient(config['db_url'])
+db = client[config['db_client']]
+
 pages = db.pages
 articles = db.articles
 
@@ -18,10 +24,12 @@ for page in pages.find():
 	try:
 		soup = BeautifulSoup(body, "html.parser")
 		
-		#print(body)
+		# Meta indicators - specific to Joel on software
 		title = soup.find('h2').getText()
 		author = soup.find('div', {"class": "author"}).getText()
 		date = soup.find('div', {"class": "date"}).getText()
+		
+
 		
 		if author.startswith('by '):
 			author = author[3:]

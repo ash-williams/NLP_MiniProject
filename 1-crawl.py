@@ -1,9 +1,17 @@
+import json
 from pymongo import MongoClient
 import urllib.request
 from bs4 import BeautifulSoup, SoupStrainer
 
+# Get Config file
+with open("config.json") as config_file:
+    config = json.load(config_file)
 
+# Connect to mongo
+client = MongoClient(config['db_url'])
+db = client[config['db_client']]
 
+# Function to get all links from a page
 def getAllLinks(url):
 	try:
 		response = urllib.request.urlopen(url)
@@ -15,41 +23,38 @@ def getAllLinks(url):
 	except:
 		print("error")
 
-#get page from html
-seed = "http://www.joelonsoftware.com/backIssues.html"
+# Variables
+# Seed page
+seed = config['seed']
 
 toCrawl = []
 crawled = []
 notJoel = []
 
-#Write to mongo
-client = MongoClient('mongodb://localhost/27017')
-db = client['uc-proto']
+# Declare links collection
 links = db.links
+
+# Base url
+base_url = config['base_url']
 
 
 toCrawl.append(seed)
 
 while len(toCrawl) != 0:
 
-	#print("To Crawl: " + (str)(len(toCrawl)))
-	#print("Crawled: " + (str)(len(crawled)))
-	#print("Not Joel: " + (str)(len(notJoel)))
-
 	link = toCrawl.pop()
 	
-	if link.startswith('http') and not link.startswith('http://www.joelonsoftware.com'):
+	if link.startswith('http') and not link.startswith(base_url):
 		#print(link)
 		notJoel.append(link)
 	else:	
-		if not link.startswith('http://www.joelonsoftware.com'):
+		if not link.startswith(base_url):
 			if link.startswith('/'):
-				link = "http://www.joelonsoftware.com" + link
+				link = base_url + link
 			else:
-				link = "http://www.joelonsoftware.com/" + link
+				link = base_url + "/" + link
 		
 		if link not in crawled:
-			#if link.startswith('http://www.joelonsoftware.com'):
 			if link.endswith('.html') or link.endswith('/'):
 				print(link)
 				getAllLinks(link)

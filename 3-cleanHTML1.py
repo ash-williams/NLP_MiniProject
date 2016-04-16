@@ -1,10 +1,16 @@
+import json
 from pymongo import MongoClient
 import urllib.request
 from bs4 import BeautifulSoup, SoupStrainer
 
-#Connect to mongo
-client = MongoClient('mongodb://localhost/27017')
-db = client['uc-proto']
+# Get Config file
+with open("config.json") as config_file:
+    config = json.load(config_file)
+
+# Connect to mongo
+client = MongoClient(config['db_url'])
+db = client[config['db_client']]
+
 pages = db.pages
 
 for page in pages.find():
