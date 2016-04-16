@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
 	"db_url": "mongodb://localhost/27017",
 	"db_client": "uc-proto",
@@ -27,4 +28,35 @@
 		"know",
 		"not"
 	]
+=======
+{
+	"db_url": "mongodb://localhost/27017",
+	"db_client": "uc-proto",
+	"base_url": "http://www.joelonsoftware.com",
+	"seed": "http://www.joelonsoftware.com/backIssues.html",
+	"min_word_count": 1000,
+	"indicators": [
+		"therefore",
+		"so",
+		"hence",
+		"consequently",
+		"because",
+		"for",
+		"since",
+		"when",
+		"then",
+		"next",
+		"who",
+		"we",
+		"they",
+		"do",
+		"doing",
+		"did",
+		"thats",
+		"in particular",
+		"but",
+		"know",
+		"not"
+	]
+>>>>>>> d60802d8e614c209359ffbcff608940a2dce4ea3
 }
