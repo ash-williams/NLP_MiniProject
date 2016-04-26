@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Search</title>
+        
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/main.css') }}">
+        <script src="{{ url_for('static', filename='js/functions.js') }}" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="top_bar">
+            <form method="POST" action="{{ url_for('search') }}">
+                <input type="text" name="query" id="searchBox" value="{{query}}" class="search_search_box" />
+                <input type="submit" id="submit" value="Search" class="search_search_submit" />
+            </form>
+        </div>
+        <div class="meta_bar">
+            <div class="flash_messages">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div class="result_count">
+                Found {{article_count}} articles.
+            </div>
+        </div>
+        <div class="content">
+            {% for article in articles %}
+                <div class="article">
+                    <div class="header">
+                        <a href="{{article[0].url}}" target="_blank">{{article[0].title}}</a>
+                        <br />
+                        <span class="header-sub">{{article[0].date}}, Author: {{article[0].author}}</span>
+                    </div>
+                    <div class="sub-header">
+                        {{article[0].url}}
+                    </div>
+                    <div class="article_content">
+                        <span class="stat">Word Count: {{article[1].total_words}}</span>
+                        <span class="stat">Indicator Count: {{article[1].total_indicator_count}}</span>
+                        <span class="stat">Percentage: {{article[1].percentage_wc_totalIncCount}}</span>
+                        <span class="more_info"><button id="detail_button" type="button" onclick="toggleVisibility('{{article[0]._id}}')">More Info</button></span>
+                    </div>
+                    <div class="detailed_view" id="{{article[0]._id}}">
+                        <table>
+                            <tr class="thead">
+                                <td>Indicator</td>
+                                <td>Count</td>
+                                <td>Percentage</td>
+                            </tr>
+                            {% for key in article[1] %}
+                                {% if article[1][key].percentage %}
+                                    <tr>
+                                        <td class="trhead">{{key}}</td>
+                                        <td>{{article[1][key].count}}</td>
+                                        <td>{{article[1][key].percentage}}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>
