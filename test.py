@@ -3,6 +3,15 @@ import os
 from pymongo import MongoClient
 import nltk
 from nltk.sem import relextract
+import re
+
+# s = "Hello.World.NET"
+
+
+
+# text = re.sub(r'\.([a-zA-Z])([a-z ])', r'. \1\2', s)
+
+# print(text)
 
 
 # Get Config file

@@ -4,6 +4,8 @@ from pymongo import MongoClient
 import nltk
 from nltk.sem import relextract
 import string
+import unicodedata
+import re
 
 
 # Get Config file
@@ -30,8 +32,15 @@ for article in articles.find():
     url = article['url']
     id = article['_id']
     
+    #Add space after capitals unless what follows is multiple capitals e.g. .NET
+    #This is a bug that needs fixing on the article extraction, currently new paragraphs in the HTML are
+    #bunched together with no "space.Like" <-- here
+    text = re.sub(r'\.([a-zA-Z"])([a-z ])', r'. \1\2', text)
+    
     words = nltk.word_tokenize(text)
     tagged = nltk.pos_tag(words)
+    
+    #tagged = tagged[:1000] #shorten list for debugging
     
 	
     int_count = 0
@@ -41,6 +50,7 @@ for article in articles.find():
             word = item[0]
             
             word = word.lower()
+            word = unicodedata.normalize('NFKD', word).encode('ascii', 'ignore')
             
             punctuation_exceptions = ['/', '-']
             for c in string.punctuation:
@@ -52,7 +62,8 @@ for article in articles.find():
             
             split = word.split(" ")
             for word in split:
-                words += [word]
+                if word != '':
+                    words += [word]
            
             int_count += 1
     
@@ -68,6 +79,7 @@ print("Generated List")
 print(named_entities)
 print(count)
 print(len(named_entities))
+print(len(tagged))
 
 
 
