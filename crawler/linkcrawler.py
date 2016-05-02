@@ -15,8 +15,9 @@ toCrawl = []
 crawled = []
 notBase = []
 
-# Declare links collection
+# Declare the collections
 links = db.links
+pages = db.pages
 
 # Base url
 base_url = config['base_url']
@@ -36,6 +37,7 @@ def getAllLinks(url):
     except:
         print("Unexpected error:", sys.exc_info()[0])
 
+#Crawl the site
 def crawlSite():
     links.drop()
     toCrawl.append(seed)
@@ -65,3 +67,29 @@ def crawlSite():
     
     #Return number of links crawled
     return len(crawled)
+
+#Get the content for each link  
+def getcontent():
+    pages.drop()
+    for link in links.find():
+    	url = link['url']
+    	id = link['_id']
+    	
+    	try:
+    		http_pool = urllib3.connection_from_url(url)
+    		r = http_pool.urlopen('GET',url)
+    		html = r.data.decode('utf-8')
+    		
+    		#print(html)
+    		
+    		json_html = {
+    			"url_link": id,
+    			"url": url,
+    			"html": html
+    		}
+    		pages.insert_one(json_html)
+    	except:
+    		print("Unexpected error:", sys.exc_info()[0])
+    
+    #return number of pages retrieved
+    return pages.count()
