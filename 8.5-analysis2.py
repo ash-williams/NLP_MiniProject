@@ -13,13 +13,6 @@ with open("config.json") as config_file:
 client = MongoClient("mongodb://" + os.environ['IP'] + "/") #for cloud nine, use MongoClient(config['db_url']) for config
 db = client[config['db_client']]
 
-
-def extract_entities(text):
-	for sent in nltk.sent_tokenize(text):
-		for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
-			if hasattr(chunk, 'node'):
-				print(chunk.node, ' '.join(c[0] for c in chunk.leaves()))
-
 articles = db.articles
 indicators = db.indicators
 analysis = db.analysis

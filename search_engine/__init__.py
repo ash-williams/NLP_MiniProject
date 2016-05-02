@@ -88,7 +88,7 @@ def search():
     results_list = []
     
     if q == "all":
-        res = db.word_list.find()
+        res = db.final_word_list.find()
         for r in res:
                 urls = r['urls']
                 
@@ -97,7 +97,7 @@ def search():
                         results_list += [url]
     else:
         for word in filtered_sentence:
-            res = db.word_list.find_one({"word": word})
+            res = db.final_word_list.find_one({"word": word})
             if res:
                 urls = res['urls']
                 
