@@ -81,11 +81,17 @@ def getcontent():
     		html = r.data.decode('utf-8')
     		
     		#print(html)
+    		soup = BeautifulSoup(html, "html5lib")
+    		
+    		head = soup.find('head')
+        	body = soup.find('body')
     		
     		json_html = {
     			"url_link": id,
     			"url": url,
-    			"html": html
+    			"html": html,
+    			"head": head.encode(),
+		        "body": body.encode()
     		}
     		pages.insert_one(json_html)
     	except:
