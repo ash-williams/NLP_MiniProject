@@ -19,7 +19,7 @@ def extract():
     count = 0
     stanford_named_ents.drop()
     
-    for article in articles.find():
+    for article in articles.find().batch_size(50):
         try:
             text = article['article_text']
             url = article['url']
