@@ -5,17 +5,31 @@
 # from nltk.sem import relextract
 # import re
 # from settings import config
-# from settings import db
-import sys
-from loader import indicators
+from settings import db
+# import sys
+# from loader import indicators
 
-# sys.path.append("/home/ubuntu/workspace/")
-# print(sys.path)
+# # sys.path.append("/home/ubuntu/workspace/")
+# # print(sys.path)
 
-x = indicators.configTest()
+# x = indicators.configTest()
 
 # config = config.getConfig()
-# db = db.getDB()
+db = db.getDB()
+
+
+#for translator
+collection = "final_word_list"
+print(db[collection].count())
+
+
+#cleaner
+from bs4 import BeautifulSoup
+body = '<body><div class="hello">Sup</div></body>'
+dclass = "hello"
+soup = BeautifulSoup(body, "html5lib")
+test = soup.find('div', {"class": dclass}).getText()
+print(test)
 
 
 # print(config['indicators'])
