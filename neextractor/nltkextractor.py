@@ -35,7 +35,7 @@ def extract():
     count = 0
     named_ents.drop()
     
-    for article in articles.find().batch_size(50):
+    for article in articles.find(no_cursor_timeout=True):
     	text = article['article_text']
     	url = article['url']
     	
