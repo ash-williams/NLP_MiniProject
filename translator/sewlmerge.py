@@ -15,6 +15,8 @@ ne_wl = db.word_list.find()
 
 fn_wl = db.final_word_list.find()
 
+count = 0
+
 def insert_into_final(item):
     global count
     # global duplicate
@@ -46,7 +48,6 @@ def insert_into_final(item):
         # print("Duplicates: " + str(duplicate))
 
 def merge():
-    count = 0
     db.final_word_list.drop()
     
     for item in nn_wl:

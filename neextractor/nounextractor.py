@@ -52,6 +52,7 @@ def extract():
                
         
         ne_url = [url] + [words]
+        global named_entities
         named_entities += [ne_url]
     
     for item in named_entities:
