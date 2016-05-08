@@ -26,5 +26,9 @@
 		"but",
 		"know",
 		"not"
+	],
+	"noun_extraction_list": [
+		"NNP",
+		"NNPS"
 	]
 }

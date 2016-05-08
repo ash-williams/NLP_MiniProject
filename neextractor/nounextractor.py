@@ -32,7 +32,7 @@ def extract():
         
         words = []
         for item in tagged:
-            if item[1] in ['NN', 'NNS', 'NNP', 'NNPS']:
+            if item[1] in config['noun_extraction_list']:
                 word = item[0]
                 
                 word = word.lower()

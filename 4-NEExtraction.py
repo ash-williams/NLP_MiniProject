@@ -20,4 +20,5 @@ print("No. of articles extracted using noun: " + str(noun) + " in " + str(elapse
 
 #nltk 18005.4361069 secs - (300 mins, 5 hours)
 #stanford 10564.88358 secs - (176 mins,2.9 hours)
-#noun 398.54835 secs - (6.63 mins)
+#noun 398.54835 secs - (6.63 mins) NN NNS NNP NNPS
+#proper nouns 98.47579 - (1.63 mins) NNP NNPS
