@@ -346,6 +346,28 @@ hr {
 .search_home_submit {
   width: 40%; }
 
+.search_options {
+  margin: 3px;
+  height: 15px;
+  width: 100%; }
+
+.search_options .so_heading {
+  font-weight: bold; }
+
+.search_options label {
+  font-style: italic; }
+
+.search_options input {
+  padding-top: 5px;
+  margin-right: 10px;
+  margin-left: 5px; }
+
+.left {
+  float: left; }
+
+.right {
+  float: right; }
+
 .top_bar {
   margin: 0;
   padding: 0;
@@ -372,7 +394,6 @@ hr {
 
 .flashes {
   list-style: none;
-  width: 150px;
   color: #85144B;
   background-color: #FFBABA;
   margin-left: 30px;
@@ -381,7 +402,7 @@ hr {
   border: 1px solid #85144B;
   padding-top: 2px;
   text-align: center;
-  padding: 0; }
+  padding: 0 3px; }
 
 .result_count {
   float: right;
@@ -437,5 +458,103 @@ hr {
 
 .detailed_view {
   display: none; }
+
+.search_options {
+  margin: 3px;
+  height: 15px; }
+
+.search_options .so_heading {
+  font-weight: bold; }
+
+.search_options label {
+  font-style: italic; }
+
+.search_options input {
+  padding-top: 5px;
+  margin-right: 10px;
+  margin-left: 5px; }
+
+.col1 {
+  float: left; }
+
+.col2 {
+  float: right; }
+
+.section {
+  border-bottom: 1px solid #f1f1f1;
+  margin-bottom: 10px; }
+
+.section h1 {
+  font-size: 18pt;
+  color: #FF851B;
+  font-weight: 600; }
+
+.section h2 {
+  font-size: 15pt;
+  color: #FF851B;
+  font-weight: 300; }
+
+.title {
+  text-decoration: underline; }
+
+.sub {
+  color: #aaa;
+  font-style: italic;
+  font-size: 11pt;
+  margin-top: -45px; }
+
+table,
+table tr,
+table tr td {
+  border: none;
+  padding: -30px; }
+
+table td {
+  font-size: 11pt;
+  text-align: left; }
+
+table td label {
+  font-weight: 600;
+  color: darker(#ddd, 20%); }
+
+.center {
+  margin: 0 auto; }
+
+.column {
+  float: left;
+  border: 1px solid #f1f1f1;
+  width: 32%;
+  margin: 5px; }
+
+.column h2 {
+  padding-left: 5px; }
+
+.data {
+  height: 400px; }
+
+.clear-fix {
+  clear: both; }
+
+.footer {
+  margin-bottom: 30px; }
+
+#indicator_pie_chart {
+  width: 100%;
+  height: 250px; }
+
+#ne_pie_chart {
+  width: 100%;
+  height: 250px; }
+
+#ee_pie_chart {
+  width: 100%;
+  height: 250px; }
+
+.pie_info {
+  margin-left: 5px; }
+
+.pie_info label {
+  font-weight: 600;
+  color: darker(#ddd, 20%); }
 
 /*# sourceMappingURL=main.css.map */

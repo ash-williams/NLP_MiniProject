@@ -9,8 +9,22 @@
     <body>
         <div class="top_bar">
             <form method="POST" action="{{ url_for('search') }}">
+                <div class="col1">
                 <input type="text" name="query" id="searchBox" value="{{query}}" class="search_search_box" />
                 <input type="submit" id="submit" value="Search" class="search_search_submit" />
+                </div>
+                <div class="col2">
+                    <div class="search_options">
+                        <label>Topics</label><input type="checkbox" name="checked" id="namedEnts" value="namedEnts"  {% if ne %}checked{% endif %} />
+                        <label>Events</label><input type="checkbox" name="checked" id="eventEnts" value="eventEnts" {% if ee %}checked{% endif %} />
+                        <br />
+                        <span class="scope_heading">Scope:</span>
+                        <label>Article</label><input type="radio" name="scope" value="article" {% if scope == "article" %}checked{% endif %} />
+                        <label>Paragraph</label><input type="radio" name="scope" value="paragraph" {% if scope == "paragraph" %}checked{% endif %} />
+                        <label>Sentence</label><input type="radio" name="scope" value="sentence" {% if scope == "sentence" %}checked{% endif %} />
+                    </div>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="meta_bar">
@@ -33,7 +47,17 @@
             {% for article in articles %}
                 <div class="article">
                     <div class="header">
-                        <a href="{{article[0].url}}" target="_blank">{{article[0].title}}</a>
+                        {% if scope=="paragraph" %}
+                            <a href="{{ url_for('result', art_id=article[0]._id, pnum=article[3].paragraph_number, snum='x', scope=scope, ne=ne, ee=ee, query=query) }}">{{article[0].title}}</a>
+                        {% endif %}
+                        
+                        {% if scope=="sentence" %}
+                        
+                        {% endif %}
+                        
+                        {% if scope=="article" %}
+                            <a href="{{ url_for('result', art_id=article[0]._id, pnum='x', snum='x', scope=scope, ne=ne, ee=ee, query=query) }}">{{article[0].title}}</a>
+                        {% endif %}
                         <br />
                         <span class="header-sub">{{article[0].date}}, Author: {{article[0].author}}</span>
                     </div>
@@ -41,10 +65,26 @@
                         {{article[0].url}}
                     </div>
                     <div class="article_content">
-                        <span class="stat">Word Count: {{article[1].total_words}}</span>
-                        <span class="stat">Indicator Count: {{article[1].total_indicator_count}}</span>
-                        <span class="stat">Percentage: {{article[1].percentage_wc_totalIncCount}}</span>
-                        <span class="more_info"><button id="detail_button" type="button" onclick="toggleVisibility('{{article[0]._id}}')">More Info</button></span>
+                        {% if scope=="paragraph" %}
+                            <span class="stat">Paragraph Number: {{article[4].paragraph_number}}</span>
+                            <span class="stat">Word Count: {{article[4].total_paragraph_word_count}}</span>
+                            <span class="stat">Indicator Count: {{article[4].total_paragraph_indicator_count}}</span>
+                            <span class="stat">Percentage: {{article[4].percentage_wc_totalParaIncCount}}</span>
+                            <span class="stat">Ranking: {{article[2]}}</span>
+                            <span class="more_info"><a href="{{article[0].url}}" target="_blank">Visit page</a></span>
+                        {% endif %}
+                        
+                        {% if scope=="sentence" %}
+                            Hello World
+                        {% endif %}
+                        
+                        {% if scope=="article" %}
+                            <span class="stat">Word Count: {{article[1].total_words}}</span>
+                            <span class="stat">Indicator Count: {{article[1].total_indicator_count}}</span>
+                            <span class="stat">Percentage: {{article[1].percentage_wc_totalIncCount}}</span>
+                            <span class="stat">Ranking: {{article[2]}}</span>
+                            <span class="more_info"><button id="detail_button" type="button" onclick="toggleVisibility('{{article[0]._id}}')">More Info</button></span>
+                        {% endif %}
                     </div>
                     <div class="detailed_view" id="{{article[0]._id}}">
                         <table>

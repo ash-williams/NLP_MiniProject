@@ -11,9 +11,14 @@ class HomeView(MethodView):
 class SearchView(MethodView):
     def get(self):
         return render_template('search.html')
+
+class ResultView(MethodView):
+    def get(self):
+        return render_template('result.html')
         
 
 
 # Register the urls
-search.add_url_rule('/', view_func=HomeView.as_view('index'))
-search.add_url_rule('/search', view_func=SearchView.as_view('list'))
+# search.add_url_rule('/', view_func=HomeView.as_view('index'))
+# search.add_url_rule('/search', view_func=SearchView.as_view('list'))
+# search.add_url_rule('/result', view_func=ResultView.as_view('view'))

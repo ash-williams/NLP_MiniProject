@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Results</title>
+        
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/main.css') }}">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="{{ url_for('static', filename='js/functions.js') }}" type="text/javascript"></script>
+        
+    </head>
+    <body>
+        <div class="top_bar">
+            <form method="POST" action="{{ url_for('search') }}">
+                <div class="col1">
+                <input type="text" name="query" id="searchBox" value="{{query}}" class="search_search_box" />
+                <input type="submit" id="submit" value="Search" class="search_search_submit" />
+                </div>
+                <div class="col2">
+                    <div class="search_options">
+                        <label>Topics</label><input type="checkbox" name="checked" id="namedEnts" value="namedEnts"  {% if ne %}checked{% endif %} />
+                        <label>Events</label><input type="checkbox" name="checked" id="eventEnts" value="eventEnts" {% if ee %}checked{% endif %} />
+                        <br />
+                        <span class="scope_heading">Scope:</span>
+                        <label>Article</label><input type="radio" name="scope" value="article" {% if scope == "article" %}checked{% endif %} />
+                        <label>Paragraph</label><input type="radio" name="scope" value="paragraph" {% if scope == "paragraph" %}checked{% endif %} />
+                        <label>Sentence</label><input type="radio" name="scope" value="sentence" {% if scope == "sentence" %}checked{% endif %} />
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="meta_bar">
+            <div class="flash_messages">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div class="result_count">
+                <a onclick="goBack()">Go Back</a>
+            </div>
+        </div>
+        <div class="content">
+            <div class="results-head section">
+                <h1>Results</h1>
+                <div class="meta">
+                    <h2 class="title">{{article[0].title}}</h2>
+                    <span class="sub">{{article[0].url}}</span>
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td><label>Author:</label> {{article[0].author}}</td>
+                            <td><label>Date:</label> {{article[0].date}}</td>
+                        </tr>
+                        <tr>
+                            {% if scope=="paragraph" %}
+                                <td><label>Word Count:</label> {{article[4].total_paragraph_word_count}}</td>
+                            {% elif scope=="sentence" %}
+                                <td>content</td>
+                            {% else %}
+                                <td><label>Word Count:</label> {{article[1].total_words}}</td>
+                            {% endif %}
+                            <td><label>Ranking:</label> {{article[2]}}</td>
+                        </tr>
+                    </table>
+                    
+                    
+                </div>
+            </div>
+            <div class="text_content section">
+                {% if scope=="paragraph" %}
+                    <h2>Content</h2>
+                    <p>{{article[3].text}}</p>
+                {% endif %}
+                
+                {% if scope=="sentence" %}
+                    <h2>Content</h2>
+                    Print content
+                {% endif %}
+                
+                {% if scope=="article" %}
+                    To read the article, <a href="{{article[0].url}}" target="_blank">visit the page.</a>
+                {% endif %}
+            </div>
+            <div class="data section">
+                <div class="indicators column">
+                    <h2>Indicators</h2>
+                    {% if scope=="paragraph" %}
+                        <div id="indicator_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[4].total_paragraph_word_count}}
+                            <br />
+                            <label>Total Indicators:</label> {{article[4].total_paragraph_indicator_count}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(article[4].percentage_wc_totalParaIncCount|float)}}%
+                        </div>
+                    {% endif %}
+                    
+                    {% if scope=="sentence" %}
+                        
+                        Print content
+                    {% endif %}
+                    
+                    {% if scope=="article" %}
+                        <div id="indicator_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[1].total_words}}
+                            <br />
+                            <label>Total Indicators:</label> {{article[1].total_indicator_count}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(article[1].percentage_wc_totalIncCount|float)}}%
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="named_entities column">
+                    <h2>Named Entities</h2>
+                    {% if scope=="paragraph" %}
+                        <div id="ne_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[4].total_paragraph_word_count}}
+                            <br />
+                            <label>Total Named Entities:</label> {{article[5].words|length}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(((100.0*(article[5].words|length))/(article[4].total_paragraph_word_count))|float)}}%
+                        </div>
+                    {% endif %}
+                    
+                    {% if scope=="sentence" %}
+                        
+                        Print content
+                    {% endif %}
+                    
+                    {% if scope=="article" %}
+                        <div id="ne_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[1].total_words}}
+                            <br />
+                            <label>Total Named Entities:</label> {{article[3].words|length}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(((100.0*(article[3].words|length))/(article[1].total_words))|float)}}%
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="event_entities column">
+                    <h2>Event Entities</h2>
+                    {% if scope=="paragraph" %}
+                        <div id="ee_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[4].total_paragraph_word_count}}
+                            <br />
+                            <label>Total Event Entities:</label> {{article[6].words|length}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(((100.0*(article[6].words|length))/(article[4].total_paragraph_word_count))|float)}}%
+                        </div>
+                    {% endif %}
+                    
+                    {% if scope=="sentence" %}
+                        
+                        Print content
+                    {% endif %}
+                    
+                    {% if scope=="article" %}
+                        <div id="ee_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[1].total_words}}
+                            <br />
+                            <label>Total Event Entities:</label> {{article[4].words|length}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(((100.0*(article[4].words|length))/(article[1].total_words))|float)}}%
+                        </div>
+                    {% endif %}
+                </div>
+                <script type="text/javascript">
+                    loadCharts();
+                </script>
+                {% if scope=="paragraph" %}
+                    <script type="text/javascript">
+                        drawPieChart("Count of indicators", {{article[4].total_paragraph_word_count}}, {{article[4].total_paragraph_indicator_count}}, "Indicators", "indicator_pie_chart");
+                        drawPieChart("Count of Named Entities", {{article[4].total_paragraph_word_count}}, {{article[5].words|length}}, "Named Entities", "ne_pie_chart");
+                        drawPieChart("Count of Event Entities", {{article[4].total_paragraph_word_count}}, {{article[6].words|length}}, "Event Entities", "ee_pie_chart");
+                    </script>
+                {% elif scope=="sentence" %}
+                
+                {% else %}
+                    <script type="text/javascript">
+                        drawPieChart("Count of indicators", {{article[1].total_words}}, {{article[1].total_indicator_count}}, "Indicators", "indicator_pie_chart")
+                        drawPieChart("Count of Named Entities", {{article[1].total_words}}, {{article[3].words|length}}, "Named Entities", "ne_pie_chart");
+                        drawPieChart("Count of Event Entities", {{article[1].total_words}}, {{article[4].words|length}}, "Event Entities", "ee_pie_chart");
+                    </script>
+                {% endif %}
+            </div>
+            <div class="clear-fix">
+               
+            </div>
+            <div class="footer">
+                
+            </div>
+            <!--
+                paragraph = [article, analysis, score, para, para_anal, ne, ee]
+                article = [article, analysis, score, ne, ee]
+            -->
+        </div>
+    </body>
+</html>
+
