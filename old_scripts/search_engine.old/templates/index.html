@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Search</title>
+        
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+    <body>
+        <div class="search_home_content">
+            <form method="POST" action="{{ url_for('search') }}">
+                <input type="text" name="query" id="searchBox" class="search_home_box" />
+                <br />
+                <div class="search_options">
+                    <div class="left">
+                        <span class="so_heading">Search For:</span>
+                        <label>Topics</label><input type="checkbox" name="checked" id="namedEnts" value="namedEnts" checked />
+                        <label>Events</label><input type="checkbox" name="checked" id="eventEnts" value="eventEnts" />
+                    </div>
+                    <div class="right">
+                        <span class="so_heading">Scope:</span>
+                        <label>Article</label><input type="radio" name="scope" value="article" checked="checked" />
+                        <label>Paragraph</label><input type="radio" name="scope" value="paragraph" />
+                        <label>Sentence</label><input type="radio" name="scope" value="sentence" />
+                    </div>
+                </div>
+                <br />
+                <div class="search_submit_div">
+                    <input type="submit" id="submit" value="Search" class="search_home_submit" />
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

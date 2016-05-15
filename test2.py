@@ -1,5 +1,5 @@
 # import nltk
-import timex
+from timex_events import timex
 
 from settings import config
 from settings import db
@@ -66,4 +66,4 @@ print(timex.tag("during the winter, canterbury gets pretty cold. next week is 4.
 print(timex.tag("Since the earthquakes, a lot of residents dont enjoy the city center. next tuesday is 4-4-1982"))
 print(timex.tag("next week is 1982/4/4"))
 print(timex.tag("in 1982, the date is 4-4-1982 and we had 2004 customers"))
-
+print(timex.tag("in September 1985. In September, 1985. blah in September. 1985 customers.."))#, returnFormat="markup"))

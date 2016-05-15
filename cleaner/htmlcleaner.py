@@ -2,6 +2,7 @@ import sys
 import urllib3
 from bs4 import BeautifulSoup
 import string
+import nltk
 
 from settings import config, db
 
@@ -50,15 +51,46 @@ def getArticleText(soup):
     to_pos = soup.find('br', {"clear":"all"})
 	
     text = ""
+    paragraphs = []
+    sentences = []
+    
+    para_count = 0
 	
     for tag in from_pos.next_siblings:
-		if tag == to_pos:
-			break
-		else:
-			try:
-				text += tag.text + " "
-			except: 
-				print("Unexpected error:", sys.exc_info()[0])
+        if tag == to_pos:
+            break
+        else:
+            try:
+                p = tag.text
+
+                text += p + " "
+                paragraphs += [{
+                    "paragraph_number": para_count,
+                    "text": p
+                }]
+                para_count = para_count + 1
+            except: 
+                print("Unexpected error:", sys.exc_info()[0])
+	
+	error_cnt = 0			
+    for p in paragraphs:
+        try: 
+            pcount = p['paragraph_number']
+            ptext = p['text']
+            s = nltk.sent_tokenize(ptext)
+            sent_count = 0
+            for sent in s:
+                sentences += [{
+                    "sentence_number": sent_count, 
+                    "paragraph_number": pcount,
+                    "text": sent
+                }]
+                sent_count += 1
+        except:
+            error_cnt += 1
+            print("Unexpected error:", sys.exc_info()[0])
+    
+    print error_cnt
 	
     text_no_punctuation = text
     punctuation_exceptions = ['/']
@@ -74,7 +106,9 @@ def getArticleText(soup):
     json = {
         "article_text": text,
         "article_no_punctuation": text_no_punctuation,
-        "article_no_punctuation_and_lower": text_no_punctuation_lower
+        "article_no_punctuation_and_lower": text_no_punctuation_lower,
+        "paragraphs": paragraphs,
+        "sentences": sentences
     }
     return json
 	

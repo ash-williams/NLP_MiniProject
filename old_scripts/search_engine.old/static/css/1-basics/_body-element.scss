@@ -1,0 +1,31 @@
+
+body {
+  background-color: white;
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: 'Fira Sans', sans-serif;
+  color: #666;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+table { 
+  margin: 15px;
+  text-align: center;
+}
+
+table, tr, td{
+  border: 1px solid $gray;
+  padding: 5px;
+}
+
+.thead{
+  font-weight: bolder;
+  font-size: 11pt;
+  text-decoration: underline;
+}
+
+.trhead{
+  font-weight: bold;
+  text-transform: capitalize;
+}
