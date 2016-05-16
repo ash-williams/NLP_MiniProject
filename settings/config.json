@@ -4,6 +4,8 @@
 	"base_url": "http://www.joelonsoftware.com",
 	"seed": "http://www.joelonsoftware.com/backIssues.html",
 	"min_word_count": 1000,
+	"paragraph_min_word_count": 100,
+	"sentence_min_word_count": 25,
 	"indicators": [
 		"therefore",
 		"so",

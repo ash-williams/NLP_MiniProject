@@ -112,13 +112,22 @@ def getRankingScore(url, **kwargs):
     score += ((100.0 * ne_cnt)/wc_cnt)
     score += ((100.0 * ee_cnt)/wc_cnt)
     
-    if e_type == "article":
-        score += ((100.0 * wc_cnt)/max_wc)
-        
-        if wc_cnt > config['min_word_count']:
-            score += 100
     
-    print score
+    score += ((100.0 * wc_cnt)/max_wc)
+    
+    if e_type == "article":
+        min_wc = config['min_word_count']
+    
+    if e_type == "sentence":
+        min_wc = config['sentence_min_word_count']
+        
+    if e_type == "paragraph":
+        min_wc = config['paragraph_min_word_count']
+        
+    if wc_cnt > min_wc:
+        score += 100
+    
+    # print score
     
     return score
     
