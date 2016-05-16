@@ -107,9 +107,24 @@ from translator import sewordlists, sewlmerge, subsewordlists, subsewlmerge
 # #   No. of sent stan translations:   8224 in 41.9890830517 secs.                                                                                               
   
   
-t3 = time.time()
-final = subsewlmerge.merge(scope="sentence")
-elapsed_time3 = time.time() - t3
+# t3 = time.time()
+# final = subsewlmerge.merge(scope="sentence")
+# elapsed_time3 = time.time() - t3
 
-print("No. of sent words final: " + str(final) + " in " + str(elapsed_time3) + " secs.")
-#No. of sent words final: 6690 in 38.0243289471 secs.
+# print("No. of sent words final: " + str(final) + " in " + str(elapsed_time3) + " secs.")
+# #No. of sent words final: 6690 in 38.0243289471 secs.
+
+
+# t0 = time.time()
+# pevents = sewordlists.translate("paragraph_event_entities", "paragraph_event_word_list")
+# elapsed_time0 = time.time() - t0
+
+# print("No. of paragraph event translations: " + str(pevents) + " in " + str(elapsed_time0) + " secs.")
+# #No. of paragraph event translations: 2488 in 6.63884305954 secs.
+
+t0 = time.time()
+sevents = sewordlists.translate("sentence_event_entities", "sentence_event_word_list")
+elapsed_time0 = time.time() - t0
+
+print("No. of sentence event translations: " + str(sevents) + " in " + str(elapsed_time0) + " secs.")
+# No. of sentence event translations: 3078 in 8.16504216194 secs. 

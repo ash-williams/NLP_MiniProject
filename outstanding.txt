@@ -1,13 +1,10 @@
 Outstanding:
 
-Must Have:
-- stemming entities
-
 Would Like:
 - Pagination on results
 - P&S scoring - wieght by count of articles from same url (a url with 8 paragraphs about java ranks higher then one with 4 paragraphs about java)
 
 BUGS:
 - NE/EE/IND count for pie chart doesn't count repeat words ('I like Java, Java is cool' counts as one word)
-- SE events -> code is all wrong!
+- SE events -> E_WL uses phrases, SE breaks to words
 - C# - remove punctuation makes this c

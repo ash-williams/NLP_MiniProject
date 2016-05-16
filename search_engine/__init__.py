@@ -6,6 +6,7 @@ import os
 import nltk
 import string
 from pymongo import MongoClient
+from nltk.corpus import wordnet
 
 
 app = Flask(__name__)
@@ -164,6 +165,36 @@ def search():
                                 if event_exists:
                                     if url not in results_list:
                                         results_list += [url]
+                    
+                    syns = wordnet.synsets(word)
+                    r = []
+                    for syn in syns:
+                        for l in syn.lemmas():
+                            if scope == "paragraph":
+                                res = db.paragraph_final_word_list.find_one({"word": l.name()})
+                            elif scope == "sentence":
+                                res = db.sentence_final_word_list.find_one({"word": l.name()})
+                            else:
+                                res = db.final_word_list.find_one({"word": l.name()})
+                            
+                            if res:
+                                for url in res['urls']:
+                                    if scope == "paragraph":
+                                        event_exists = db.paragraph_event_entities.find_one({"url":url})
+                                    elif scope == "sentence":
+                                        event_exists = db.sentence_event_entities.find_one({"url":url})
+                                    else:
+                                        event_exists = db.event_entities.find_one({"url":url})
+                                    if event_exists:
+                                        if url not in r:
+                                            r += [url]
+                    # print r
+                    # print results_list
+                    for rs in r:
+                        if rs not in results_list:
+                            results_list += [rs]
+                                   
+                
                 # event ents
                 for word in filtered_sentence:
                     if scope == "paragraph":
@@ -190,6 +221,25 @@ def search():
                             for url in urls:
                                 if url not in results_list:
                                     results_list += [url]
+                    
+                    syns = wordnet.synsets(word)
+                    r = []
+                    for syn in syns:
+                        for l in syn.lemmas():
+                            if scope == "paragraph":
+                                res = db.paragraph_event_word_list.find_one({"word": l.name()})
+                            elif scope == "sentence":
+                                res = db.sentence_event_word_list.find_one({"word": l.name()})
+                            else:
+                                res = db.event_word_list.find_one({"word": l.name()})
+                            
+                            if res:
+                                for url in res['urls']:
+                                    if url not in r:
+                                        r += [url]
+                    for rs in r:
+                        if rs not in results_list:
+                            results_list += [rs]
             else:
                 for word in filtered_sentence:
                     if scope == "paragraph":
@@ -216,6 +266,25 @@ def search():
                             for url in urls:
                                 if url not in results_list:
                                     results_list += [url]
+                    
+                    syns = wordnet.synsets(word)
+                    r = []
+                    for syn in syns:
+                        for l in syn.lemmas():
+                            if scope == "paragraph":
+                                res = db.paragraph_final_word_list.find_one({"word": l.name()})
+                            elif scope == "sentence":
+                                res = db.sentence_final_word_list.find_one({"word": l.name()})
+                            else:
+                                res = db.final_word_list.find_one({"word": l.name()})
+                            
+                            if res:
+                                for url in res['urls']:
+                                    if url not in r:
+                                        r += [url]
+                    for rs in r:
+                        if rs not in results_list:
+                            results_list += [rs]
         else:
             if eventEnts:
                 for word in filtered_sentence:
@@ -243,6 +312,26 @@ def search():
                             for url in urls:
                                 if url not in results_list:
                                     results_list += [url]
+                    
+                    syns = wordnet.synsets(word)
+                    r = []
+                    for syn in syns:
+                        for l in syn.lemmas():
+                            if scope == "paragraph":
+                                res = db.paragraph_event_word_list.find_one({"word": l.name()})
+                            elif scope == "sentence":
+                                res = db.sentence_event_word_list.find_one({"word": l.name()})
+                            else:
+                                res = db.event_word_list.find_one({"word": l.name()})
+                            
+                            if res:
+                                for url in res['urls']:
+                                    if url not in r:
+                                        r += [url]
+                    for rs in r:
+                        if rs not in results_list:
+                            results_list += [rs]
+                            
             else:
                 flash("Select at least one checkbox.")
                 return render_template('search.html', articles=article_list, query=q, ne=namedEnts, ee=eventEnts, article_count=len(article_list))
@@ -296,7 +385,9 @@ def search():
             article = db.articles.find_one({"url": url})
             analysis = db.analysis.find_one({"url": url})
             ranking = db.ranked_results.find_one({"url": url})
-            score = ranking['score']
+            score = 0
+            if ranking:
+                score = ranking['score']
             
             article_list += [[article, analysis, score]]
         
