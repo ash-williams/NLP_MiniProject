@@ -44,10 +44,24 @@
                 {% endwith %}
             </div>
             <div class="result_count">
-                Found {{article_count}} articles.
+                Found {{article_count}} articles in {{time}} secs.
             </div>
         </div>
         <div class="content">
+            <div class="pagination">
+                <ul>
+                <li><a href="{{url_for('search', page=(page - 1), scope=scope, ne=ne, ee=ee, query=query)}}"><<</a></li>
+                <li><a {% if (page==1) %}class="active"{% endif %} href="{{url_for('search', scope=scope, ne=ne, ee=ee, query=query)}}">1</a></li>
+                    
+                {% if total_pages > 1 %}
+                    {% for num in range(2,(total_pages + 1)) %}
+                        <li><a  {% if (page==num) %}class="active"{% endif %} href="{{url_for('search', page=(num), scope=scope, ne=ne, ee=ee, query=query)}}">{{num}}</a></li>
+                    {% endfor %}
+                {% endif %} 
+                
+                <li><a href="{{url_for('search', page=(page + 1), scope=scope, ne=ne, ee=ee, query=query)}}">>></a></li>
+                </ul>
+            </div>
             {% for article in articles %}
                 <div class="article">
                     <div class="header">
@@ -94,7 +108,8 @@
                             <span class="stat">Indicator Count: {{article[1].total_indicator_count}}</span>
                             <span class="stat">Percentage: {{article[1].percentage_wc_totalIncCount}}</span>
                             <span class="stat">Ranking: {{article[2]}}</span>
-                            <span class="more_info"><button id="detail_button" type="button" onclick="toggleVisibility('{{article[0]._id}}')">More Info</button></span>
+                            <!--<span class="more_info"><button id="detail_button" type="button" onclick="toggleVisibility('{{article[0]._id}}')">More Info</button></span>-->
+                            <span class="more_info"><a href="{{article[0].url}}" targer="_blank">Visit Page</a></span>
                         {% endif %}
                     </div>
                     <!--<div class="detailed_view" id="{{article[0]._id}}">-->
@@ -117,6 +132,21 @@
                     <!--</div>-->
                 </div>
             {% endfor %}
+            <div class="spacer"></div>
+            <div class="pagination">
+                <ul>
+                <li><a href="{{url_for('search', page=(page - 1), scope=scope, ne=ne, ee=ee, query=query)}}"><<</a></li>
+                <li><a {% if (page==1) %}class="active"{% endif %} href="{{url_for('search', scope=scope, ne=ne, ee=ee, query=query)}}">1</a></li>
+                    
+                {% if total_pages > 1 %}
+                    {% for num in range(2,(total_pages + 1)) %}
+                        <li><a  {% if (page==num) %}class="active"{% endif %} href="{{url_for('search', page=(num), scope=scope, ne=ne, ee=ee, query=query)}}">{{num}}</a></li>
+                    {% endfor %}
+                {% endif %} 
+                
+                <li><a href="{{url_for('search', page=(page + 1), scope=scope, ne=ne, ee=ee, query=query)}}">>></a></li>
+                </ul>
+            </div>
         </div>
     </body>
 </html>

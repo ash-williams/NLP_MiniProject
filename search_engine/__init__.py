@@ -7,7 +7,7 @@ import nltk
 import string
 from pymongo import MongoClient
 from nltk.corpus import wordnet
-
+import time
 
 app = Flask(__name__)
 
@@ -50,29 +50,54 @@ register_blueprints(app)
 def index():
     return render_template('index.html')
     
-@app.route('/search', methods=['POST'])
+    
+# @app.route('/users/', defaults={'page': 1})
+# @app.route('/users/page/<int:page>')
 
-def search():
+# @app.route('/search/', defaults={"page": 1}, methods=['POST'])
+# @app.route('/search/page/<int:page>', methods=['POST'])
+
+
+@app.route('/search/', defaults={"page": 1}, methods=['GET','POST'])
+# @app.route('/search/page/<int:page>/<scope>/<ne>/<ee>/<query>', methods=['GET','POST'])
+@app.route('/search/page/<int:page>', methods=['GET','POST'])
+
+def search(page):
+    t0 = time.time()
     results_list = []
     article_list = []
+    # q = ""
     
-    q = request.form['query']
-    # print request.values
-    # ar = request.args
-    checked = request.form.getlist("checked")
-    scope = request.form.get("scope")
+    try:
+        scope = request.args.get('scope')
+        namedEnts = request.args.get('ne')
+        eventEnts = request.args.get('ee')
+        q = request.args.get('query')
+        # scope = kwargs.get('scope', None)
+        # namedEnts = kwargs.get('ne', None)
+        # eventEnts = kwargs.get('ee', None)
+        # q = kwargs.get('query', None)
+    except:
+        pass
     
-    # print radio
+    if not q and not scope:
+        q = request.form['query']
+        # print request.values
+        # ar = request.args
+        checked = request.form.getlist("checked")
+        scope = request.form.get("scope")
     
-    if "namedEnts" in checked:
-        namedEnts = True
-    else:
-        namedEnts = False
+        # print radio
     
-    if "eventEnts" in checked:
-        eventEnts = True
-    else:
-        eventEnts = False
+        if "namedEnts" in checked:
+            namedEnts = True
+        else:
+            namedEnts = False
+        
+        if "eventEnts" in checked:
+            eventEnts = True
+        else:
+            eventEnts = False
         
     # 
     #results = db.articles.count()
@@ -142,7 +167,8 @@ def search():
                                 event_exists = db.paragraph_event_entities.find_one({"url": url[0], "paragraph_number": url[1]})
                                 if event_exists:
                                     if url not in results_list:
-                                        results_list += [url]
+                                        rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number":url[1]})
+                                        results_list += [[rank['score'], [url]]]
                             
                     elif scope == "sentence":
                         res = db.sentence_final_word_list.find_one({"word":word})
@@ -154,7 +180,8 @@ def search():
                                 event_exists = db.sentence_event_entities.find_one({"url": url[0], "paragraph_number": url[1], "sentence_number": url[2]})
                                 if event_exists:
                                     if url not in results_list:
-                                        results_list += [url]
+                                        rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number":url[1], "sentence_number": url[2]})
+                                        results_list += [[rank['score'], [url]]]
                     else:
                         res = db.final_word_list.find_one({"word": word})
                         if res:
@@ -164,7 +191,8 @@ def search():
                                 event_exists = db.event_entities.find_one({"url": url})
                                 if event_exists:
                                     if url not in results_list:
-                                        results_list += [url]
+                                        rank = db.ranked_results.find_one({"url": url})
+                                        results_list += [[rank['score'], [url]]]
                     
                     syns = wordnet.synsets(word)
                     r = []
@@ -187,7 +215,16 @@ def search():
                                         event_exists = db.event_entities.find_one({"url":url})
                                     if event_exists:
                                         if url not in r:
-                                            r += [url]
+                                            if scope == "paragraph":
+                                                rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number": url[1]})
+                                            elif scope == "sentence":
+                                                rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number": url[1], "sentence_number": url[2]})
+                                            else:
+                                                rank = db.ranked_results.find_one({"url": url})
+                                                
+                                            
+                                            r += [[rank['score'], [url]]]
+                    
                     # print r
                     # print results_list
                     for rs in r:
@@ -204,7 +241,8 @@ def search():
                             
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number":url[1]})
+                                    results_list += [[rank['score'], [url]]]
                     elif scope == "sentence":
                         res = db.sentence_event_word_list.find_one({"word": word})
                         if res:
@@ -212,7 +250,8 @@ def search():
                             
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number":url[1], "sentence_number": url[2]})
+                                    results_list += [[rank['score'], [url]]]
                     else:
                         res = db.event_word_list.find_one({"word": word})
                         if res:
@@ -220,7 +259,8 @@ def search():
                             
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.ranked_results.find_one({"url": url})
+                                    results_list += [[rank['score'], [url]]]
                     
                     syns = wordnet.synsets(word)
                     r = []
@@ -236,7 +276,15 @@ def search():
                             if res:
                                 for url in res['urls']:
                                     if url not in r:
-                                        r += [url]
+                                        if scope == "paragraph":
+                                            rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number": url[1]})
+                                        elif scope == "sentence":
+                                            rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number": url[1], "sentence_number": url[2]})
+                                        else:
+                                            rank = db.ranked_results.find_one({"url": url})
+                                            
+                                        r += [[rank['score'], [url]]]
+                    # print r
                     for rs in r:
                         if rs not in results_list:
                             results_list += [rs]
@@ -249,7 +297,8 @@ def search():
                         
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number":url[1]})
+                                    results_list += [[rank['score'], [url]]]
                     elif scope == "sentence":
                         res = db.sentence_final_word_list.find_one({"word": word})
                         if res:
@@ -257,7 +306,8 @@ def search():
                         
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number":url[1], "sentence_number": url[2]})
+                                    results_list += [[rank['score'], [url]]]
                     else:
                         res = db.final_word_list.find_one({"word": word})
                         if res:
@@ -265,7 +315,8 @@ def search():
                         
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.ranked_results.find_one({"url": url})
+                                    results_list += [[rank['score'], [url]]]
                     
                     syns = wordnet.synsets(word)
                     r = []
@@ -281,7 +332,15 @@ def search():
                             if res:
                                 for url in res['urls']:
                                     if url not in r:
-                                        r += [url]
+                                        if scope == "paragraph":
+                                            rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number": url[1]})
+                                        elif scope == "sentence":
+                                            rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number": url[1], "sentence_number": url[2]})
+                                        else:
+                                            rank = db.ranked_results.find_one({"url": url})
+                                            
+                                        r += [[rank['score'], [url]]]
+                    # print r
                     for rs in r:
                         if rs not in results_list:
                             results_list += [rs]
@@ -295,7 +354,8 @@ def search():
                             
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number":url[1]})
+                                    results_list += [[rank['score'], [url]]]
                     elif scope == "sentence":
                         res = db.sentence_event_word_list.find_one({"word": word})
                         if res:
@@ -303,7 +363,8 @@ def search():
                             
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number":url[1], "sentence_number": url[2]})
+                                    results_list += [[rank['score'], [url]]]
                     else:
                         res = db.event_word_list.find_one({"word": word})
                         if res:
@@ -311,7 +372,8 @@ def search():
                             
                             for url in urls:
                                 if url not in results_list:
-                                    results_list += [url]
+                                    rank = db.ranked_results.find_one({"url": url})
+                                    results_list += [[rank['score'], [url]]]
                     
                     syns = wordnet.synsets(word)
                     r = []
@@ -327,7 +389,15 @@ def search():
                             if res:
                                 for url in res['urls']:
                                     if url not in r:
-                                        r += [url]
+                                        if scope == "paragraph":
+                                            rank = db.paragraph_ranked_results.find_one({"url": url[0], "paragraph_number": url[1]})
+                                        elif scope == "sentence":
+                                            rank = db.sentence_ranked_results.find_one({"url": url[0], "paragraph_number": url[1], "sentence_number": url[2]})
+                                        else:
+                                            rank = db.ranked_results.find_one({"url": url})
+                                            
+                                        r += [[rank['score'], [url]]]
+                    # print r
                     for rs in r:
                         if rs not in results_list:
                             results_list += [rs]
@@ -335,10 +405,44 @@ def search():
             else:
                 flash("Select at least one checkbox.")
                 return render_template('search.html', articles=article_list, query=q, ne=namedEnts, ee=eventEnts, article_count=len(article_list))
-                            
+    
+    #pagination_code
+    num_of_results = len(results_list)
+    page_size = config['page_size_limit']
+    
+    ranked_list = []
+    ranked_list = sorted(results_list,key=lambda results_item: results_item[0], reverse=True)
+    
+    print ranked_list
+    
+    rlist = [ranked_list[i:i+page_size] for i in range(0, num_of_results, page_size)]
+    
+    # print results_list
+    # print ranked_list
+    # print rlist
+    res = []
+    for r in rlist[page - 1]:
+        res += [r[1][0]]
+    
+    # print res
+    # print len(res)
+    num_of_pages = len(rlist)
+    
+    if page < 1:
+        page = 1
+    
+    if page > num_of_pages:
+        page = num_of_pages
+    
+
+    # print page, num_of_pages, num_of_results, page_size
+    #end pagination
+    
+    
+    
     
     # get article for each item
-    for url in results_list:
+    for url in res:
         if scope == "paragraph":
             article = db.articles.find_one({"url": url[0]})
             analysis = db.analysis.find_one({"url": url[0]})
@@ -400,13 +504,29 @@ def search():
         for a in article_list:
             if a[0]['url'] == url:
                 count += 1
-        print("old score:" + str(score))
+        # print("old score:" + str(score))
         score += (count * 10)
         item[2] = score
-        print("new score:" + str(item[2]))
+        # print("new score:" + str(item[2]))
     
     # return list
     article_list = sorted(article_list,key=lambda article_item: article_item[2], reverse=True)
+    #     #pagination_code
+    # num_of_results = len(article_list)
+    # page_size = config['page_size_limit']
+    
+    # rlist = [article_list[i:i+page_size] for i in range(0, num_of_results, page_size)]
+    # num_of_pages = len(rlist)
+    
+    # if page < 1:
+    #     page = 1
+    
+    # if page > num_of_pages:
+    #     page = num_of_pages
+    
+
+    # print page, num_of_pages, num_of_results, page_size
+    # #end pagination
         
     if len(article_list) == 0: 
         flash("No results found.")
@@ -414,7 +534,8 @@ def search():
     # flash(q)
     #flash(article_list[0])
     #return redirect(url_for('search', articles=article_list))
-    return render_template('search.html', articles=article_list, query=q, ne=namedEnts, ee=eventEnts, scope=scope, article_count=len(article_list))
+    elapsed = time.time() - t0
+    return render_template('search.html', articles=article_list, query=q, ne=namedEnts, ee=eventEnts, scope=scope, article_count=num_of_results, time=elapsed, total_pages=num_of_pages, page=page)
 
 @app.route('/result/<art_id>/<pnum>/<snum>/<scope>/<ne>/<ee>/<query>', methods=['GET', 'POST'])
 

@@ -488,6 +488,35 @@ hr {
 .col2 {
   float: right; }
 
+.pagination {
+  width: 100%;
+  text-align: left; }
+
+.pagination ul {
+  display: inline-block;
+  padding: 0;
+  margin: 0; }
+
+.pagination ul li {
+  display: inline; }
+
+.pagination ul li a {
+  color: #aaa;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none; }
+
+.pagination ul li a.active {
+  background-color: #FF851B;
+  color: #fff; }
+
+.pagination ul li a:hover:not(.active) {
+  background-color: #f1f1f1; }
+
+.spacer {
+  height: 30px;
+  margin-bottom: 20px; }
+
 .section {
   border-bottom: 1px solid #f1f1f1;
   margin-bottom: 10px; }

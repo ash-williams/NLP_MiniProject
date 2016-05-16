@@ -41,4 +41,4 @@ for article in db.articles.find(no_cursor_timeout=True):
 elapsed_time = time.time() - t0
 
 print("Complete in: " + str(elapsed_time) + "secs")
-#Complete in: 7922.06356812 secs
+#Complete in: Complete in: 14136.2538049secs  

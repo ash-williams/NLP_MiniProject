@@ -1,9 +1,7 @@
 Outstanding:
 
-Would Like:
-- Pagination on results
-
 BUGS:
 - NE/EE/IND count for pie chart doesn't count repeat words ('I like Java, Java is cool' counts as one word)
 - SE events -> E_WL uses phrases, SE breaks to words
 - C# - remove punctuation makes this c
+- Ranking is screwy in places - multiple words?
