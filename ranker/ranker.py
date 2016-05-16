@@ -18,6 +18,7 @@ def getRankingScore(url, **kwargs):
         if snum != None:
             e_type = "sentence"
             snum = int(snum)
+            pnum = int(pnum)
         else:
             e_type = "paragraph"
             pnum = int(pnum)
@@ -57,10 +58,30 @@ def getRankingScore(url, **kwargs):
     elif e_type == "sentence":
         max_wc = stats.getLargestSentenceWordCount()
         
-        in_cnt = 0
-        ne_cnt = 0
-        ee_cnt = 0
-        wc_cnt = 0
+        ne_words = []
+        ee_words = []
+        
+        analysis = db.analysis.find_one({"url":url})
+        ne = db.paragraph_named_entities.find_one({"url":url, "paragraph_number": pnum, "sentence_number": snum})
+        ee = db.paragraph_event_entities.find_one({"url":url, "paragraph_number": pnum, "sentence_number": snum})
+        
+        if ne:
+            ne_words = ne['words']
+        
+        if ee:
+            ee_words = ee['words']
+        
+        sent_anal = analysis['sentence_analysis']
+        
+        for sent in sent_anal:
+            # print para
+            if sent['paragraph_number'] == pnum and sent['sentence_number'] == snum:
+                in_cnt = sent['total_sentence_indicator_count']
+                wc_cnt = sent['total_sentence_word_count']
+                # print in_cnt, wc_cnt
+            
+        ne_cnt = len(ne_words)
+        ee_cnt = len(ee_words)
         
     else:
         max_wc = stats.getLargestArticleWordCount()
@@ -133,7 +154,18 @@ def insertRankedPage(url, **kwargs):
                 "score": score
             })
     elif e_type == "sentence":
-        print e_type
+        ranked_results = db.sentence_ranked_results
+        
+        doc = ranked_results.find_one({"url": url, "paragraph_number": pnum, "sentence_number": snum})
+        if not doc:
+            score = getRankingScore(url, paraNo=pnum, sentNo=snum)
+            
+            ranked_results.insert_one({
+                "url": url,
+                "paragraph_number": pnum,
+                "sentence_number": snum,
+                "score": score
+            })
     else:
         ranked_results = db.ranked_results
         

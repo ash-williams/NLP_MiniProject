@@ -15,6 +15,10 @@ class SearchView(MethodView):
 class ResultView(MethodView):
     def get(self):
         return render_template('result.html')
+
+class NEVennView(MethodView):
+    def get(self):
+        return render_template('ne_venn.html')
         
 
 

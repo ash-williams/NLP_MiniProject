@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Named Entities Visual</title>
+        
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/main.css') }}">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="{{ url_for('static', filename='js/functions.js') }}" type="text/javascript"></script>
+        
+    </head>
+    <body>
+        <div class="nav">
+            <a href="/">Home</a>
+            <a href="/nevisual">Named Entity Visualiser</a>
+        </div>
+        <div class="top_bar">
+            
+        </div>
+        <div class="meta_bar">
+            <div class="flash_messages">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div class="result_count">
+                <a onclick="goBack()">Go Back</a>
+            </div>
+        </div>
+        <div class="content">
+            <div class="col1">
+                <div class="section">
+                    <h2 class="title">Diagram to show the cross over between three named entity<br /> extraction methods</h2> 
+                </div>
+                
+                <div id="venn"></div>
+            </div>
+            
+            <div class="col2">
+                <div class="section">
+                    <h2 class="title">Results</h2>
+                </div>
+                
+                <table>
+                    <tr>
+                        <td><label>NLTK</label></td>
+                        <td>{{values[0]}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>Stanford</label></td>
+                        <td>{{values[1]}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>Noun</label></td>
+                        <td>{{values[2]}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>NLTK &cap; Stanford</label></td>
+                        <td>{{values[3]}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>NLTK &cap; Noun</label></td>
+                        <td>{{values[4]}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>Stanford &cap; Nount</label></td>
+                        <td>{{values[5]}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label>NLTK &cap; Stanford &cap; Noun</label></td>
+                        <td>{{values[6]}}</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            
+            
+        </div>
+    </body>
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='js/venn.js') }}" type="text/javascript"></script>
+<script>
+    // define sets and set set intersections
+    // [nltk_size, stan_size, noun_size, nl_st_size, nl_no_size, st_no_size, nl_st_no_size]
+    var sets =  [ 
+                    {sets: ['NLTK'], size: {{values[0]}}},
+                    {sets: ['Stanford'], size: {{values[1]}}},
+                    {sets: ['Noun'], size: {{values[2]}}},
+                    {sets: ['NLTK','Stanford'], size: {{values[3]}}},
+                    {sets: ['NLTK', 'Noun'], size: {{values[4]}}},
+                    {sets: ['Stanford', 'Noun'], size: {{values[5]}}},
+                    {sets: ['NLTK', 'Stanford', 'Noun'], size: {{values[6]}}}
+                ];
+    
+    var chart = venn.VennDiagram();
+    d3.select("#venn").datum(sets).call(chart);
+</script>
+
+
+

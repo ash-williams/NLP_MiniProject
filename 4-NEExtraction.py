@@ -49,7 +49,7 @@ sstanford = substanfordextractor.extract(extract_type="sentence")
 elapsed_time6 = time.time() - t6
 
 print("No. of articles whose sentences extracted using stanford: " + str(sstanford) + " in " + str(elapsed_time6) + " secs.")
-#stanford sent 
+#stanford sent 237978.350157 secs. (3966.30583595 mins, 66.1050972658 hours, 2.75437905274 days)
 
 # t7 = time.time()
 # pnoun = subnounextractor.extract(extract_type="paragraph")

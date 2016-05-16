@@ -92,9 +92,24 @@ from translator import sewordlists, sewlmerge, subsewordlists, subsewlmerge
 # #   No. of para stan translations:  5128 in 269.809001923 secs.                                                                                              
                                                             
                                                             
+# t3 = time.time()
+# final = subsewlmerge.merge(scope="paragraph")
+# elapsed_time3 = time.time() - t3
+
+# print("No. of para words final: " + str(final) + " in " + str(elapsed_time3) + " secs.")
+# #No. of para words final: 6727 in 364.004263878 secs.
+
+# t0 = time.time()
+# sstan = subsewordlists.translate("sentence_stanford_named_entities", "sentence_stanford_word_list", extract_type="sentence")
+# elapsed_time0 = time.time() - t0
+
+# print("No. of sent stan translations: " + str(sstan) + " in " + str(elapsed_time0) + " secs.")
+# #   No. of sent stan translations:   8224 in 41.9890830517 secs.                                                                                               
+  
+  
 t3 = time.time()
-final = subsewlmerge.merge(scope="paragraph")
+final = subsewlmerge.merge(scope="sentence")
 elapsed_time3 = time.time() - t3
 
-print("No. of para words final: " + str(final) + " in " + str(elapsed_time3) + " secs.")
-#No. of para words final: 6727 in 364.004263878 secs.
+print("No. of sent words final: " + str(final) + " in " + str(elapsed_time3) + " secs.")
+#No. of sent words final: 6690 in 38.0243289471 secs.

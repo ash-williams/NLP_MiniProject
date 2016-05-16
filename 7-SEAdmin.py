@@ -21,13 +21,24 @@ db = db.getDB()
 
 # print("Complete in: " + str(elapsed_time) + "secs")
 
-db.paragraph_ranked_results.drop()
+# db.paragraph_ranked_results.drop()
+
+# t0 = time.time()
+# for article in db.articles.find(no_cursor_timeout=True):
+#     for paragraph in article['paragraphs']:
+#         r.insertRankedPage(article['url'], paraNo=paragraph['paragraph_number'])
+# elapsed_time = time.time() - t0
+
+# print("Complete in: " + str(elapsed_time) + "secs")
+# #Complete in: 3716.60676098secs
+
+db.sentence_ranked_results.drop()
 
 t0 = time.time()
 for article in db.articles.find(no_cursor_timeout=True):
-    for paragraph in article['paragraphs']:
-        r.insertRankedPage(article['url'], paraNo=paragraph['paragraph_number'])
+    for sentence in article['sentences']:
+        r.insertRankedPage(article['url'], paraNo=sentence['paragraph_number'], sentNo=sentence['sentence_number'])
 elapsed_time = time.time() - t0
 
 print("Complete in: " + str(elapsed_time) + "secs")
-#Complete in: 3716.60676098secs
+#Complete in: 7922.06356812 secs

@@ -6,6 +6,10 @@
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/main.css') }}">
     </head>
     <body>
+        <div class="nav">
+            <a href="/">Home</a>
+            <a href="/nevisual">Named Entity Visualiser</a>
+        </div>
         <div class="search_home_content">
             <form method="POST" action="{{ url_for('search') }}">
                 <input type="text" name="query" id="searchBox" class="search_home_box" />

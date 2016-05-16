@@ -331,6 +331,14 @@ hr {
   margin: 10px 0 30px;
   height: 0; }
 
+.nav {
+  margin: 0;
+  padding-top: 3px;
+  padding-bottom: 3px; }
+  .nav a {
+    padding-left: 30px;
+    padding-right: 20px; }
+
 .search_home_content {
   width: 60%;
   margin: 20% auto; }

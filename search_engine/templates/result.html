@@ -9,6 +9,10 @@
         
     </head>
     <body>
+        <div class="nav">
+            <a href="/">Home</a>
+            <a href="/nevisual">Named Entity Visualiser</a>
+        </div>
         <div class="top_bar">
             <form method="POST" action="{{ url_for('search') }}">
                 <div class="col1">
@@ -60,7 +64,7 @@
                             {% if scope=="paragraph" %}
                                 <td><label>Word Count:</label> {{article[4].total_paragraph_word_count}}</td>
                             {% elif scope=="sentence" %}
-                                <td>content</td>
+                                <td><label>Word Count:</label> {{article[4].total_sentence_word_count}}</td>
                             {% else %}
                                 <td><label>Word Count:</label> {{article[1].total_words}}</td>
                             {% endif %}
@@ -79,7 +83,7 @@
                 
                 {% if scope=="sentence" %}
                     <h2>Content</h2>
-                    Print content
+                    <p>{{article[3].text}}</p>
                 {% endif %}
                 
                 {% if scope=="article" %}
@@ -101,8 +105,14 @@
                     {% endif %}
                     
                     {% if scope=="sentence" %}
-                        
-                        Print content
+                        <div id="indicator_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[4].total_sentence_word_count}}
+                            <br />
+                            <label>Total Indicators:</label> {{article[4].total_sentence_indicator_count}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(article[4].percentage_wc_totalSentIncCount|float)}}%
+                        </div>
                     {% endif %}
                     
                     {% if scope=="article" %}
@@ -130,8 +140,14 @@
                     {% endif %}
                     
                     {% if scope=="sentence" %}
-                        
-                        Print content
+                        <div id="ne_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[4].total_sentence_word_count}}
+                            <br />
+                            <label>Total Named Entities:</label> {{article[5].words|length}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(((100.0*(article[5].words|length))/(article[4].total_sentence_word_count))|float)}}%
+                        </div>
                     {% endif %}
                     
                     {% if scope=="article" %}
@@ -159,8 +175,14 @@
                     {% endif %}
                     
                     {% if scope=="sentence" %}
-                        
-                        Print content
+                        <div id="ee_pie_chart" class="center"></div>
+                        <div class="pie_info">
+                            <label>Word Count:</label> {{article[4].total_sentence_word_count}}
+                            <br />
+                            <label>Total Event Entities:</label> {{article[6].words|length}}
+                            <br />
+                            <label>Percentage:</label> {{'%0.2f'| format(((100.0*(article[6].words|length))/(article[4].total_sentence_word_count))|float)}}%
+                        </div>
                     {% endif %}
                     
                     {% if scope=="article" %}
@@ -184,7 +206,11 @@
                         drawPieChart("Count of Event Entities", {{article[4].total_paragraph_word_count}}, {{article[6].words|length}}, "Event Entities", "ee_pie_chart");
                     </script>
                 {% elif scope=="sentence" %}
-                
+                    <script type="text/javascript">
+                        drawPieChart("Count of indicators", {{article[4].total_sentence_word_count}}, {{article[4].total_sentence_indicator_count}}, "Indicators", "indicator_pie_chart");
+                        drawPieChart("Count of Named Entities", {{article[4].total_sentence_word_count}}, {{article[5].words|length}}, "Named Entities", "ne_pie_chart");
+                        drawPieChart("Count of Event Entities", {{article[4].total_sentence_word_count}}, {{article[6].words|length}}, "Event Entities", "ee_pie_chart");
+                    </script>
                 {% else %}
                     <script type="text/javascript">
                         drawPieChart("Count of indicators", {{article[1].total_words}}, {{article[1].total_indicator_count}}, "Indicators", "indicator_pie_chart")
