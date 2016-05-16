@@ -391,6 +391,19 @@ def search():
             
             article_list += [[article, analysis, score]]
         
+    for item in article_list:
+        article = item[0]
+        score = item[2]
+        url = article['url']
+        
+        count = 1
+        for a in article_list:
+            if a[0]['url'] == url:
+                count += 1
+        print("old score:" + str(score))
+        score += (count * 10)
+        item[2] = score
+        print("new score:" + str(item[2]))
     
     # return list
     article_list = sorted(article_list,key=lambda article_item: article_item[2], reverse=True)
